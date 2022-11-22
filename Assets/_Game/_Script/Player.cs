@@ -2,9 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
+
+    //Animations
+    private Animator Anim;
+
+
+
 
     //Movement
      private Vector2 _currentPos,_lastPos,_deltapos;
@@ -15,10 +22,6 @@ public class Player : MonoBehaviour
     Transform _myTransform;
 
 
-
-
- 
-
     //RigidBodyApproch
     // Rigidbody _myrigidbody;
 
@@ -27,6 +30,9 @@ public class Player : MonoBehaviour
 
     //metadata
    [SerializeField] private float _vRange, _vpower, _vCapaciy;
+    [SerializeField] private int CurrentAmount;
+    public TextMeshProUGUI CashText;
+
 
 
     //TempraryCode
@@ -47,45 +53,9 @@ public class Player : MonoBehaviour
 
     public Material CanCollect;
 
-    public void CollectObject()
-    {
-        int countt = InrangeObjects.Count;
-        for (int i = 0; i < countt; i++)
-        {
-            temp2 = InrangeObjects[i];
-            //  InrangeObjects[i].transform.position = Vector3.Lerp(_myTransform.position, InrangeObjects[i].transform.position, 1f * Time.deltaTime);
-            temp2.transform.position = Vector3.Lerp(temp2.transform.position, _myTransform.position, _vpower * Time.deltaTime);
-            if (Vector3.Distance(temp2.transform.position, _myTransform.position) < 0.5f)
-            {
-                InrangeObjects.RemoveAt(i);
-                countt = InrangeObjects.Count;
-                Destroy(temp2.gameObject);
-            }
-        }
-    }
-
-    public void GetMoneyObjectsInsideRange()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(_myTransform.position, _vRange);
-        for (int i = 0; i < hitColliders.Length; i++)
-        {
-            if(hitColliders[i].CompareTag("CollectableObjects"))
-            {
-                if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange)
-                {
-                    hitColliders[i].GetComponent<MeshRenderer>().material = CanCollect;
-                    InrangeObjects.Add(hitColliders[i].gameObject);
-                    hitColliders[i].tag = "Untagged";
-                    
-                }
-            }
-        }
-    }
 
 
-
-
-   
+  
  
     // Start is called before the first frame update
     void Start()
@@ -94,9 +64,13 @@ public class Player : MonoBehaviour
 
 
 
-      //  _myrigidbody = GetComponent<Rigidbody>();
+        //  _myrigidbody = GetComponent<Rigidbody>();
+
+        GetCurrentValue();
+        CashText.text = CurrentAmount.ToString();
         _myTransform = this.transform;
-        PlayerModel = transform.GetChild(0).transform;
+        PlayerModel = transform.GetChild(1).transform;
+        Anim = PlayerModel.GetComponent<Animator>();
         GridManager.Instance.ReturnGridIndex(_myTransform.position);
         GetMoneyObjectsInsideRange();
 
@@ -105,13 +79,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CollectObject();
+        GetMoneyObjectsInsideRange();
         if(Input.GetMouseButtonDown(0))
         {
             _lastPos = Input.mousePosition;
         }
         else if(Input.GetMouseButton(0))
         {
+            Anim.SetBool("Run", true);
             _currentPos = Input.mousePosition;
             _deltapos = _currentPos - _lastPos;
             _deltapos = _deltapos.normalized;
@@ -129,7 +104,10 @@ public class Player : MonoBehaviour
 
         }
         if (Input.GetMouseButtonUp(0))
-            GetMoneyObjectsInsideRange();
+        {
+            Anim.SetBool("Run", false);
+           // GetMoneyObjectsInsideRange();
+        }
     }
 
 
@@ -149,4 +127,70 @@ public class Player : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
+
+
+
+
+    public void GetCurrentValue()
+    {
+        _vRange = GameManager.Instance.CurrentRange;
+        _vpower=GameManager.Instance.CurrentPower;
+        _vCapaciy = GameManager.Instance.CurrentCapacity;
+       
+    }
+
+
+
+
+
+
+    public void CollectObject()
+    {
+        int countt = InrangeObjects.Count;
+
+        for (int i = 0; i < countt; i++)
+        {
+            temp2 = InrangeObjects[i];
+            //  InrangeObjects[i].transform.position = Vector3.Lerp(_myTransform.position, InrangeObjects[i].transform.position, 1f * Time.deltaTime);
+            temp2.transform.position = Vector3.Lerp(temp2.transform.position, _myTransform.position, _vpower * Time.deltaTime);            
+            //Scale optiom
+            //    temp2.transform.localScale = Vector3.Lerp(temp2.transform.localScale, new Vector3(0f, 0f, 0f), Time.deltaTime);
+
+            if (Vector3.Distance(temp2.transform.position, _myTransform.position) < 0.5f)
+            {
+                InrangeObjects.RemoveAt(i);
+                countt = InrangeObjects.Count;
+                CurrentAmount++;
+                CashText.text = CurrentAmount.ToString();
+                Destroy(temp2.gameObject);
+            }
+        }
+    }
+
+    public void GetMoneyObjectsInsideRange()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(_myTransform.position, _vRange);
+        for (int i = 0; i < hitColliders.Length; i += 2)
+        {
+            if (hitColliders[i].CompareTag("CollectableObjects"))
+            {
+                if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange)
+                {
+                    hitColliders[i].GetComponent<MeshRenderer>().material = CanCollect;
+                    InrangeObjects.Add(hitColliders[i].gameObject);
+                    hitColliders[i].tag = "Untagged";
+
+                }
+            }
+        }
+        CollectObject();
+    }
+
+
+
+
+
+
+
 }

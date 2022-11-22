@@ -30,7 +30,8 @@ public class Player : MonoBehaviour
 
     //metadata
    [SerializeField] private float _vRange, _vpower, _vCapaciy;
-    [SerializeField] private int CurrentAmount;
+    public int CurrentAmount;
+    public int AmountInBag;
     public TextMeshProUGUI CashText;
 
 
@@ -67,7 +68,7 @@ public class Player : MonoBehaviour
         //  _myrigidbody = GetComponent<Rigidbody>();
 
         GetCurrentValue();
-        CashText.text = CurrentAmount.ToString();
+       
         _myTransform = this.transform;
         PlayerModel = transform.GetChild(1).transform;
         Anim = PlayerModel.GetComponent<Animator>();
@@ -161,13 +162,11 @@ public class Player : MonoBehaviour
             {
                 InrangeObjects.RemoveAt(i);
                 countt = InrangeObjects.Count;
-                CurrentAmount++;
-                CashText.text = CurrentAmount.ToString();
+                AmountInBag++;
                 Destroy(temp2.gameObject);
             }
         }
     }
-
     public void GetMoneyObjectsInsideRange()
     {
         Collider[] hitColliders = Physics.OverlapSphere(_myTransform.position, _vRange);
@@ -189,7 +188,7 @@ public class Player : MonoBehaviour
 
 
 
-
+   
 
 
 

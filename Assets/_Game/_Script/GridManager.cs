@@ -130,14 +130,14 @@ public class GridManager : MonoBehaviour
 
     public void ReturnGridIndex(Vector3 playerPos)
     {
-        Debug.Log(playerPos);
+        //Debug.Log(playerPos);
         for (int i = 0; i < _len; i++)
         {
-            Debug.Log(playerPos.x + " CurrentGrid:" + _gridCenter[i, 0]+" index:"+i +" min:" +( _gridCenter[i, 0].x - _GridSize*0.5) + " max:" + (_gridCenter[i, 0].x + _GridSize*0.5));
+          //  Debug.Log(playerPos.x + " CurrentGrid:" + _gridCenter[i, 0]+" index:"+i +" min:" +( _gridCenter[i, 0].x - _GridSize*0.5) + " max:" + (_gridCenter[i, 0].x + _GridSize*0.5));
 
             if (playerPos.x > _gridCenter[i, 0].x - (_GridSize*0.5) && playerPos.x < _gridCenter[i, 0].x + (_GridSize*0.5))
             {
-                Debug.Log(i);
+              //  Debug.Log(i);
                 CurrentPos.x = i;
                 break;
             }
@@ -145,11 +145,11 @@ public class GridManager : MonoBehaviour
 
         for (int i = 0; i < _len; i++)
         {
-            Debug.Log(playerPos.z + " CurrentGrid:" + _gridCenter[0, i] + " index:" + i + " min:" + (_gridCenter[0, i].z - _GridSize * 0.5) + " max:" + (_gridCenter[0, i].z + _GridSize * 0.5));
+          //  Debug.Log(playerPos.z + " CurrentGrid:" + _gridCenter[0, i] + " index:" + i + " min:" + (_gridCenter[0, i].z - _GridSize * 0.5) + " max:" + (_gridCenter[0, i].z + _GridSize * 0.5));
 
             if (playerPos.z > _gridCenter[0, i].z - (_GridSize * 0.5) && playerPos.z < _gridCenter[0, i].z + (_GridSize * 0.5))
             {
-                Debug.Log(i);
+            //    Debug.Log(i);
                 CurrentPos.y = i;
             }
         }

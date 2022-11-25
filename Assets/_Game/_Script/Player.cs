@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEditor;
 
 public class Player : MonoBehaviour
 {
@@ -37,6 +38,12 @@ public class Player : MonoBehaviour
 
 
     //TempraryCode
+
+
+    public Transform PlayerModelTransform;
+
+
+
     public GameObject[] MoneyObjects;
 
 
@@ -68,7 +75,7 @@ public class Player : MonoBehaviour
         //  _myrigidbody = GetComponent<Rigidbody>();
 
         GetCurrentValue();
-       
+        PlayerModelTransform = transform.GetChild(1).transform;
         _myTransform = this.transform;
         PlayerModel = transform.GetChild(1).transform;
         Anim = PlayerModel.GetComponent<Animator>();
@@ -119,6 +126,14 @@ public class Player : MonoBehaviour
         Gizmos.color=Color.red;
         _myTransform = this.transform;
         Gizmos.DrawWireSphere(_myTransform.position, _vRange);
+        Gizmos.DrawWireCube(_myTransform.position, new Vector3(_vRange, _vRange, _vRange)*2);
+
+        int len = InrangeObjects.Count;
+        for (int i = 0; i < len; i++)
+        {
+
+        }
+
 
     }
 
@@ -170,21 +185,29 @@ public class Player : MonoBehaviour
     public void GetMoneyObjectsInsideRange()
     {
         Collider[] hitColliders = Physics.OverlapSphere(_myTransform.position, _vRange);
+      
         for (int i = 0; i < hitColliders.Length; i += 2)
         {
             if (hitColliders[i].CompareTag("CollectableObjects"))
             {
-                if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange)
-                {
+
+
+                float angle = Vector3.Angle(PlayerModelTransform.position, hitColliders[i].transform.position);
+               if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange && angle<10)
+               {
                     hitColliders[i].GetComponent<MeshRenderer>().material = CanCollect;
                     InrangeObjects.Add(hitColliders[i].gameObject);
                     hitColliders[i].tag = "Untagged";
-
                 }
             }
         }
+        //Debug.Break();
         CollectObject();
     }
+
+
+
+
 
 
 

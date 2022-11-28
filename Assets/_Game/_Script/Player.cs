@@ -11,13 +11,15 @@ public class Player : MonoBehaviour
     //Animations
     private Animator Anim;
 
-
-
-
     //Movement
      private Vector2 _currentPos,_lastPos,_deltapos;
      private Vector3 _temp;
     [SerializeField] private float _speed;
+
+
+
+
+    
 
     //TransformApproch
     Transform _myTransform;
@@ -38,6 +40,7 @@ public class Player : MonoBehaviour
 
 
     //TempraryCode
+    private Vector3 VacCenter;
 
 
     public Transform PlayerModelTransform;
@@ -62,6 +65,10 @@ public class Player : MonoBehaviour
     public Material CanCollect;
 
 
+    public GameObject Box;
+    public Quaternion Boxr;
+
+
 
   
  
@@ -73,21 +80,21 @@ public class Player : MonoBehaviour
 
 
         //  _myrigidbody = GetComponent<Rigidbody>();
-
-        GetCurrentValue();
+       
+       
         PlayerModelTransform = transform.GetChild(1).transform;
         _myTransform = this.transform;
         PlayerModel = transform.GetChild(1).transform;
         Anim = PlayerModel.GetComponent<Animator>();
         GridManager.Instance.ReturnGridIndex(_myTransform.position);
+        GetCurrentValue();
         GetMoneyObjectsInsideRange();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetMoneyObjectsInsideRange();
+     GetMoneyObjectsInsideRange();
         if(Input.GetMouseButtonDown(0))
         {
             _lastPos = Input.mousePosition;
@@ -100,7 +107,6 @@ public class Player : MonoBehaviour
             _deltapos = _deltapos.normalized;
             _temp.x = _deltapos.x * _speed * Time.deltaTime;
             _temp.z = _deltapos.y *_speed * Time.deltaTime;
-
 
             //TransformApproch
             _myTransform.position += _temp;
@@ -123,18 +129,11 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.color=Color.red;
+        Gizmos.color=Color.black;
         _myTransform = this.transform;
-        Gizmos.DrawWireSphere(_myTransform.position, _vRange);
-        Gizmos.DrawWireCube(_myTransform.position, new Vector3(_vRange, _vRange, _vRange)*2);
-
-        int len = InrangeObjects.Count;
-        for (int i = 0; i < len; i++)
-        {
-
-        }
-
-
+   //     Gizmos.DrawWireSphere(_myTransform.position, _vRange);
+        Gizmos.DrawWireCube(Box.transform.position,Vector3.one * _vRange*2);
+    
     }
 
 
@@ -150,10 +149,10 @@ public class Player : MonoBehaviour
 
     public void GetCurrentValue()
     {
-        _vRange = GameManager.Instance.CurrentRange;
-        _vpower=GameManager.Instance.CurrentPower;
-        _vCapaciy = GameManager.Instance.CurrentCapacity;
-       
+        _vRange = GameManager.Instance.CurrentRangeLevel;
+        _vpower=GameManager.Instance.CurrentPowerLevel;
+        _vCapaciy = GameManager.Instance.CurrentCapacityLevel;
+        SetVacSize();
     }
 
 
@@ -182,18 +181,31 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+
+
+    public void SetVacSize()
+    {
+        VacCenter = _myTransform.position;
+        VacCenter.z += _vRange*2;
+        Box.transform.position=VacCenter;
+         Box.transform.rotation=Boxr;
+        Box.transform.localScale=Box.transform.parent.InverseTransformVector(Vector3.one * _vRange * 2);
+            //= Vector3.one * _vRange*2;
+    }
+
     public void GetMoneyObjectsInsideRange()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(_myTransform.position, _vRange);
-      
+       
+        Collider[] hitColliders = Physics.OverlapBox(Box.transform.position, Vector3.one*_vRange, Boxr);
         for (int i = 0; i < hitColliders.Length; i += 2)
-        {
+        { 
+         
             if (hitColliders[i].CompareTag("CollectableObjects"))
             {
-
-
-                float angle = Vector3.Angle(PlayerModelTransform.position, hitColliders[i].transform.position);
-               if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange && angle<10)
+         //       float angle = Vector3.Angle(PlayerModelTransform.position, hitColliders[i].transform.position);
+               //if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange && angle<60)
+                if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange *2)
                {
                     hitColliders[i].GetComponent<MeshRenderer>().material = CanCollect;
                     InrangeObjects.Add(hitColliders[i].gameObject);
@@ -201,7 +213,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        //Debug.Break();
+
         CollectObject();
     }
 

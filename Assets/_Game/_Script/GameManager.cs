@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _currentLevel;
     [SerializeField] private float _currentLevelProgress;
     [SerializeField] public int CurrentAmount;
-    [SerializeField] public int CurrentPower;
-    [SerializeField] public int CurrentRange;
-    [SerializeField] public int CurrentCapacity;
+    [SerializeField] public int CurrentPowerLevel;
+    [SerializeField] public int CurrentRangeLevel;
+    [SerializeField] public int CurrentCapacityLevel;
 
 
     private void Awake()
@@ -31,7 +31,9 @@ public class GameManager : MonoBehaviour
         
     }
 
+    
 
+    
 
 
 

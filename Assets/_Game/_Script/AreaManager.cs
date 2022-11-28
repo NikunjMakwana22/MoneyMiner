@@ -8,6 +8,7 @@ public class AreaManager : MonoBehaviour
 
     public Player player;
     public TextMeshProUGUI CashText;
+    private int Temp;
 
 
 
@@ -15,10 +16,8 @@ public class AreaManager : MonoBehaviour
     [SerializeField] private bool IsPlayerInside=false,IsUpgradeCanvasVisible=false;
 
 
-    public GameObject UpgradeCanvas;
 
-
-    [SerializeField] private float CurrentTime, DelayTime;
+   // [SerializeField] private float CurrentTime, DelayTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,21 +33,29 @@ public class AreaManager : MonoBehaviour
             {
                 //DepositeMoney
 
-            CurrentTime -= 1 * Time.deltaTime;
-                 if(CurrentTime<0.1f && player.AmountInBag>0)
-                 {
-                    player.AmountInBag--;
-                    player.CurrentAmount++;
-                    CashText.text = player.CurrentAmount.ToString();
-                    CurrentTime = DelayTime;
-                 }
+                //CurrentTime -= 1 * Time.deltaTime;
+                //     if(CurrentTime<0.1f && player.AmountInBag>0)
+                //     {
+                //        player.AmountInBag--;
+                //        player.CurrentAmount++;
+
+                //        CurrentTime = DelayTime;
+                //     }
+                if (player.AmountInBag > 0)
+                {
+                    player.CurrentAmount += player.AmountInBag;
+                    player.AmountInBag = 0;
+                    player.IsBagFull = false;
+                    player.CapacityProgressBar.fillAmount = 0f;
+                    ButtonManager.Instance.UpdateCashText();
+                }
             }
             else
             {
                 if(!IsUpgradeCanvasVisible)
                 {
                     IsUpgradeCanvasVisible = true;
-                    UpgradeCanvas.SetActive(true);
+                    ButtonManager.Instance.EnableUpgradeMenu();
                 }
             }
         }
@@ -77,6 +84,6 @@ public class AreaManager : MonoBehaviour
     {
         IsPlayerInside = false;
         IsUpgradeCanvasVisible = false;
-        UpgradeCanvas.SetActive(false);
+        ButtonManager.Instance.DisableUpgradeMenu();
     }
 }

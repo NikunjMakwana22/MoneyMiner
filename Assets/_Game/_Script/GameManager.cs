@@ -14,11 +14,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] public int CurrentPowerLevel;
     [SerializeField] public int CurrentRangeLevel;
     [SerializeField] public int CurrentCapacityLevel;
+    [SerializeField] public int NextPowerAmount;
+    [SerializeField] public int NextRangeAmount;
+    [SerializeField] public int NextCapacityAmount;
+
 
 
     private void Awake()
     {
         Instance = this;
+    
     }
 
     void Start()

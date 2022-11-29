@@ -6,10 +6,12 @@ using TMPro;
 public class AreaManager : MonoBehaviour
 {
 
-    public Player player;
-    public TextMeshProUGUI CashText;
-    private int Temp;
 
+    public Animator MachineAnim;
+
+    public Player player;
+    private int Temp;
+   [SerializeField] private int AmountInMachine;
 
 
     [SerializeField] private bool UpgradeArea;
@@ -17,7 +19,7 @@ public class AreaManager : MonoBehaviour
 
 
 
-   // [SerializeField] private float CurrentTime, DelayTime;
+    [SerializeField] private float CurrentTime, DelayTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,17 +35,11 @@ public class AreaManager : MonoBehaviour
             {
                 //DepositeMoney
 
-                //CurrentTime -= 1 * Time.deltaTime;
-                //     if(CurrentTime<0.1f && player.AmountInBag>0)
-                //     {
-                //        player.AmountInBag--;
-                //        player.CurrentAmount++;
-
-                //        CurrentTime = DelayTime;
-                //     }
+               
                 if (player.AmountInBag > 0)
                 {
-                    player.CurrentAmount += player.AmountInBag;
+                    AmountInMachine = (int)player.AmountInBag/100;
+                   // player.CurrentAmount += player.AmountInBag;
                     player.AmountInBag = 0;
                     player.IsBagFull = false;
                     player.CapacityProgressBar.fillAmount = 0f;
@@ -59,9 +55,23 @@ public class AreaManager : MonoBehaviour
                 }
             }
         }
-       
-        
-        
+
+        if(AmountInMachine>0)
+        {
+            MachineAnim.SetBool("Play", true);
+            CurrentTime -= 1 * Time.deltaTime;
+            if (CurrentTime < 0.1f)
+            {
+                AmountInMachine--;
+                if(AmountInMachine<1)
+                    MachineAnim.SetBool("Play", false);
+                Debug.Log("InstamtiateGoldBar");
+                CurrentTime = DelayTime;
+            }
+        }
+
+
+
     }
 
 

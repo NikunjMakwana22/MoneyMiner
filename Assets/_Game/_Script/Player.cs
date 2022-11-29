@@ -73,6 +73,7 @@ public class Player : MonoBehaviour
         GridManager.Instance.ReturnGridIndex(_myTransform.position);
         GetCurrentValue();
         GetMoneyObjectsInsideRange();
+     
     }
 
     void Update()
@@ -106,8 +107,8 @@ public class Player : MonoBehaviour
         {
             Anim.SetBool("Run", false);
         }
-//#elif UNITY_IOS || UNITY_ANDROID
-
+#elif UNITY_IOS || UNITY_ANDROID
+        Application.targetFrameRate = 120;
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);

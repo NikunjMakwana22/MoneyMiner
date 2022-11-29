@@ -46,8 +46,8 @@ public class ButtonManager : MonoBehaviour
 
 
     public void UpgradePower()
-    {   
-        GameManager.Instance.CurrentPowerLevel += 1;
+    {
+        Player._speed += 1;
         Player.CurrentAmount -= GameManager.Instance.NextPowerAmount;
         Player.GetCurrentValue();
         CheckCurrentAmount();

@@ -6,8 +6,9 @@ using TMPro;
 public class AreaManager : MonoBehaviour
 {
 
-
+    public Temp_GoldSorter Temp_GoldSorter;
     public Animator MachineAnim;
+    public GameObject GoldBarPrefab;
 
     public Player player;
     private int Temp;
@@ -42,6 +43,7 @@ public class AreaManager : MonoBehaviour
                    // player.CurrentAmount += player.AmountInBag;
                     player.AmountInBag = 0;
                     player.IsBagFull = false;
+                    player.FullText.enabled = false;
                     player.CapacityProgressBar.fillAmount = 0f;
                     ButtonManager.Instance.UpdateCashText();
                 }
@@ -63,9 +65,11 @@ public class AreaManager : MonoBehaviour
             if (CurrentTime < 0.1f)
             {
                 AmountInMachine--;
-                if(AmountInMachine<1)
+                Temp_GoldSorter.InstGold();
+                player.CurrentAmount++;
+                ButtonManager.Instance.UpdateCashText();
+                if (AmountInMachine<1)
                     MachineAnim.SetBool("Play", false);
-                Debug.Log("InstamtiateGoldBar");
                 CurrentTime = DelayTime;
             }
         }

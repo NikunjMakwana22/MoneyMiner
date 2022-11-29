@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     //Movement
     private Vector2 _currentPos,_lastPos,_deltapos;
     private Vector3 _temp;
-    [SerializeField] private float _speed;
+    [SerializeField] public float _speed;
     [SerializeField] private float _rotSpeed;
     //Movement_End
 
@@ -39,6 +39,7 @@ public class Player : MonoBehaviour
     public int CurrentAmount;
     public int AmountInBag;
     public TextMeshProUGUI CashText;
+    public TextMeshProUGUI FullText;
     public bool IsBagFull = false;
     //metadata_End
 
@@ -49,6 +50,7 @@ public class Player : MonoBehaviour
     public Quaternion Boxr;
     public List<GameObject> InrangeObjects;
     public GameObject temp2;
+    public GameObject EndPoint;
     //VacuumLogicObjects_End
 
 
@@ -67,6 +69,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = 300;
         _myTransform = this.transform;
         PlayerModel = transform.GetChild(1).transform;
         Anim = PlayerModel.GetComponent<Animator>();
@@ -108,7 +111,7 @@ public class Player : MonoBehaviour
             Anim.SetBool("Run", false);
         }
 #elif UNITY_IOS || UNITY_ANDROID
-        Application.targetFrameRate = 120;
+        
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -167,8 +170,9 @@ public class Player : MonoBehaviour
         for (int i = 0; i < countt; i++)
         {
             temp2 = InrangeObjects[i];
-            temp2.transform.position = Vector3.Lerp(temp2.transform.position, _myTransform.position, _vpower * Time.deltaTime);            
-            if (Vector3.Distance(temp2.transform.position, _myTransform.position) < 0.5f)
+            temp2.transform.position = Vector3.Lerp(temp2.transform.position, EndPoint.transform.position, _vpower *2* Time.deltaTime);
+            temp2.transform.localScale = Vector3.Lerp(temp2.transform.localScale,Vector3.zero, 2 * Time.deltaTime);
+            if (Vector3.Distance(temp2.transform.position, EndPoint.transform.position) < 0.5f)
             {
                 InrangeObjects.RemoveAt(i);
                 countt = InrangeObjects.Count;
@@ -181,6 +185,7 @@ public class Player : MonoBehaviour
                         InrangeObjects[j].tag = "CollectableObjects";
                     }
                     InrangeObjects.Clear();
+                    FullText.enabled = true;
                     IsBagFull = true;
                     break;
                 }
@@ -203,7 +208,7 @@ public class Player : MonoBehaviour
                 if (Vector3.Distance(_myTransform.position, hitColliders[i].transform.position) < _vRange *2)
                 {
                    
-                    hitColliders[i].GetComponent<MeshRenderer>().material = CanCollect;
+                    //hitColliders[i].GetComponent<MeshRenderer>().material = CanCollect;
                     InrangeObjects.Add(hitColliders[i].gameObject);
                     hitColliders[i].tag = "Untagged";
                 }

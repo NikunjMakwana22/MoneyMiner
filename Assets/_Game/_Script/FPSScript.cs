@@ -17,7 +17,7 @@ public class FPSScript : MonoBehaviour
 
     void Start()
     {
-       
+        FPStext = GetComponent<TextMeshProUGUI>();
     }
 
     void Update()

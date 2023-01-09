@@ -75,14 +75,14 @@ public class Player : MonoBehaviour
         Anim = PlayerModel.GetComponent<Animator>();
         GridManager.Instance.ReturnGridIndex(_myTransform.position);
         GetCurrentValue();
-        GetMoneyObjectsInsideRange();
+   //     GetMoneyObjectsInsideRange();
      
     }
 
     void Update()
     {
         if(!IsBagFull)
-            GetMoneyObjectsInsideRange();
+         //   GetMoneyObjectsInsideRange();
 #if UNITY_EDITOR
      
         if (Input.GetMouseButtonDown(0))
